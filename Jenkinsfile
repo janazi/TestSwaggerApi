@@ -3,7 +3,7 @@ pipeline {
      stages {
         stage('Restore packages'){
            steps{
-               sh 'dotnet restore TestSwaggerApi\\TestSwaggerApi.sln'
+               sh 'dotnet restore ${workspace}\\TestSwaggerApi\\TestSwaggerApi.sln'
             }
          }
         stage('Clean'){
@@ -14,6 +14,12 @@ pipeline {
         stage('Build'){
            steps{
                sh 'dotnet build TestSwaggerApi\\TestSwaggerApi.sln --configuration Release --no-restore'
+            }
+         }
+         stage('Generate Docs'){
+           steps{
+              sh 'dotnet tool install SwashBuckle.AspNetCore.Cli'
+              sh 'dotnet build TestSwaggerApi\\TestSwaggerApi.sln --configuration Release --no-restore'
             }
          }
         stage('Publish'){
