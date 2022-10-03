@@ -19,7 +19,7 @@ pipeline {
          stage('Generate Docs'){
            steps{
               sh 'dotnet tool install SwashBuckle.AspNetCore.Cli'
-              sh 'dotnet build TestSwaggerApi\\TestSwaggerApi.sln --configuration Release --no-restore'
+              sh 'dotnet swagger tofile --output TestSwaggerApi.yaml --yaml .\bin\Debug\net6.0\TestSwaggerApi.dll v1'
             }
          }
         stage('Publish'){
