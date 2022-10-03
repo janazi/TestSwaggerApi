@@ -1,38 +1,34 @@
-stage ('Clean workspace') {
-  steps {
-    cleanWs()
-  }
-}
-
-stage ('Git Checkout') {
-  steps {
-      git branch: 'main', credentialsId: 'jenkins-github', url: 'https://github.com/janazi/TestSwaggerApi'
+pipeline {
+    agent any
+     stages {
+        stage('Restore packages'){
+           steps{
+               sh 'dotnet restore Webapptest.sln'
+            }
+         }
+        stage('Clean'){
+           steps{
+               sh 'dotnet clean Webapptest.sln --configuration Release'
+            }
+         }
+        stage('Build'){
+           steps{
+               sh 'dotnet build Webapptest.sln --configuration Release --no-restore'
+            }
+         }
+        stage('Publish'){
+             steps{
+               sh 'dotnet publish Webapptest/Webapptest.csproj --configuration Release --no-restore'
+             }
+        }
+        stage('Deploy'){
+             steps{
+               sh '''for pid in $(lsof -t -i:9090); do
+                       kill -9 $pid
+               done'''
+               sh 'cd WebApplication/bin/Release/netcoreapp6/publish/'
+               sh 'nohup dotnet WebApplication.dll --urls="http://aspcore.local:8092" --ip="127.0.0.1" --port=8092 --no-restore > /dev/null 2>&1 &'
+             }
+        }
     }
-  }
-
-stage('Restore packages') {
-  steps {
-    bat "dotnet restore ${workspace}\\TestSwaggerApi\\TestSwaggerApi.sln"
-  }
 }
-
-stage('Clean') {
-  steps {
-    bat "msbuild.exe ${workspace}\\TestSwaggerApi\\TestSwaggerApi.sln" /nologo /nr:false /p:platform=\"x64\" /p:configuration=\"release\" /t:clean"
-  }
-}
-
-stage('Increase version') {
-    steps {
-        echo "${env.BUILD_NUMBER}"
-        powershell '''
-           $xmlFileName = "<path-to-solution>\\<package-project-name>\\Package.appxmanifest"     
-           [xml]$xmlDoc = Get-Content $xmlFileName
-           $version = $xmlDoc.Package.Identity.Version
-           $trimmedVersion = $version -replace '.[0-9]+$', '.'
-           $xmlDoc.Package.Identity.Version = $trimmedVersion + ${env:BUILD_NUMBER}
-           echo 'New version:' $xmlDoc.Package.Identity.Version
-           $xmlDoc.Save($xmlFileName)
-        '''
-     }
- }
