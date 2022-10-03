@@ -3,22 +3,22 @@ pipeline {
      stages {
         stage('Restore packages'){
            steps{
-               sh 'dotnet restore Webapptest.sln'
+               sh 'dotnet restore TestSwaggerApi\\TestSwaggerApi.sln'
             }
          }
         stage('Clean'){
            steps{
-               sh 'dotnet clean Webapptest.sln --configuration Release'
+               sh 'dotnet clean TestSwaggerApi\\TestSwaggerApi.sln --configuration Release'
             }
          }
         stage('Build'){
            steps{
-               sh 'dotnet build Webapptest.sln --configuration Release --no-restore'
+               sh 'dotnet build TestSwaggerApi\\TestSwaggerApi.sln --configuration Release --no-restore'
             }
          }
         stage('Publish'){
              steps{
-               sh 'dotnet publish Webapptest/Webapptest.csproj --configuration Release --no-restore'
+               sh 'dotnet publish TestSwaggerApi\\TestSwaggerApi.csproj --configuration Release --no-restore'
              }
         }
         stage('Deploy'){
