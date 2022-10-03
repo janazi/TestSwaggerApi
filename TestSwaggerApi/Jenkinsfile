@@ -1,0 +1,11 @@
+stage ('Clean workspace') {
+  steps {
+    cleanWs()
+  }
+}
+
+stage ('Git Checkout') {
+  steps {
+      git branch: 'main', credentialsId: 'jenkins-github', url: 'https://github.com/janazi/TestSwaggerApi'
+    }
+  }
