@@ -8,12 +8,12 @@ pipeline {
          }
         stage('Clean'){
            steps{
-               sh 'dotnet clean TestSwaggerApi\\TestSwaggerApi.sln --configuration Release'
+               sh 'dotnetClean TestSwaggerApi\\TestSwaggerApi.sln --configuration Release'
             }
          }
         stage('Build'){
            steps{
-               sh 'dotnet build TestSwaggerApi\\TestSwaggerApi.sln --configuration Release --no-restore'
+               sh 'dotnetBuild  TestSwaggerApi\\TestSwaggerApi.sln --configuration Release --no-restore'
             }
          }
          stage('Generate Docs'){
