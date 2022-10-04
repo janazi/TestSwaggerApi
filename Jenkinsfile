@@ -3,7 +3,7 @@ pipeline {
      stages {
         stage('Restore packages'){
            steps{
-               sh 'dotnet restore ${workspace}\\TestSwaggerApi\\TestSwaggerApi.sln'
+               sh 'dotnetRestore ${workspace}\\TestSwaggerApi\\TestSwaggerApi.sln'
             }
          }
         stage('Clean'){
